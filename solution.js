@@ -1,14 +1,18 @@
 {
     init: function(elevators, floors) {
-        var loopThruAll = function(elevator) {
+        var loopThruAll = function(elevator, inOrder) {
             floors.forEach(function(current,index){
-                elevator.goToFloor(index);
+                if(inOrder){
+                    elevator.goToFloor(index);
+                } else {
+                    elevator.goToFloor(floors.length - index - 1);
+                }
             });
         };
         
         elevators.forEach(function(elevator,index){
             elevator.on("idle", function(){
-                loopThruAll(elevator);
+                loopThruAll(elevator, index%2 === 0);
             });
         });
     },
