@@ -8,6 +8,24 @@
             console.log(text);
         }
 
+        var floorWhereMostPeopleAreWaiting = function(waitingAt_Up, waitingAt_Down){
+            var totalWaitingAtDestination = [];
+            waitingAt_Up.forEach(function(current, index){
+                totalWaitingAtDestination.push(waitingAt_Up[index] + waitingAt_Down[index]);
+            });
+
+
+            var max = totalWaitingAtDestination[0];
+            var maxIndex = 0;
+            totalWaitingAtDestination.forEach(function(current, index){
+                if(current > max){
+                    maxIndex = index;
+                    max = current;
+                }
+            });
+            return maxIndex;
+        }
+
         
         elevators.forEach(function(current, index){
             current.on("floor_button_pressed", function(floorNum) { 
@@ -50,22 +68,7 @@
                 });
             });
             current.on("idle", function(floorNum) { 
-                var totalWaitingAtDestination = [];
-                waitingAt_Up.forEach(function(current, index){
-                    totalWaitingAtDestination.push(waitingAt_Up[index] + waitingAt_Down[index]);
-                });
-
-                console.log("waiting Total = "+totalWaitingAtDestination);
-
-                var max = totalWaitingAtDestination[0];
-                var maxIndex = 0;
-                totalWaitingAtDestination.forEach(function(current, index){
-                    if(current > max){
-                        maxIndex = index;
-                        max = current;
-                    }
-                });
-                console.log("maxWaitingAtFloor is floor = "+maxIndex+", with waiting="+max);
+                var maxIndex = floorWhereMostPeopleAreWaiting(waitingAt_Up,waitingAt_Down);
                 
                 current.goToFloor(maxIndex); 
             });
