@@ -12,7 +12,10 @@
         elevators.forEach(function(current, index){
             current.on("floor_button_pressed", function(floorNum) { 
                 console.log("floor_button_pressed: " + floorNum );
-                current.goToFloor(floorNum);
+                var totalWaitingAtDestination = waitingAt_Up[floorNum] + waitingAt_Down[floorNum];
+                if(totalWaitingAtDestination > 0){
+                    current.goToFloor(floorNum);
+                }
             });
             current.on("passing_floor", function(floorNum, direction) { 
                 myLog("passing_floor: " + floorNum + ", " + direction+", load: "+ current.loadFactor(), index);
