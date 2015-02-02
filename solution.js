@@ -13,30 +13,44 @@
             current.on("floor_button_pressed", function(floorNum) { 
                 console.log("floor_button_pressed: " + floorNum );
                 current.goToFloor(floorNum);
+                if(current.currentFloor() > floorNum){
+                    elevatorsDirection[index] = "down";
+                } else {
+                    elevatorsDirection[index] = "up";
+                }
             });
             current.on("passing_floor", function(floorNum, direction) { 
                 myLog("passing_floor: " + floorNum + ", " + direction+", load: "+ current.loadFactor(), index);
-                if(current.loadFactor() < 0.8){
-                    if(direction === "up" && waitingAt_Up[floorNum] > 0){
-                        myLog("entered mid lift - up", index);
-                        elevators[0].goToFloor(floorNum, true);
-                        waitingAt_Up[floorNum] = 0;
+                elevators.forEach(function(current, index){
+                    var loadFactorBefore = current.loadFactor();
+                    if(loadFactorBefore < 0.8){
+                        if(direction === "up" && waitingAt_Up[floorNum] > 0){
+                            myLog("entered mid lift - up", index);
+                            if(current.loadFactor() > loadFactorBefore){
+                                current.goToFloor(floorNum, true);
+                                waitingAt_Up[floorNum]--;
+                            }
+                        }
+                        if(direction === "down" && waitingAt_Down[floorNum] > 0){
+                            myLog("entered mid lift - down", index);
+                            if(current.loadFactor() > loadFactorBefore){
+                                current.goToFloor(floorNum, true);
+                                waitingAt_Down[floorNum]--;
+                            }
+                        }
                     }
-                    if(direction === "down" && waitingAt_Down[floorNum] > 0){
-                        myLog("entered mid lift - down", index);
-                        elevators[1].goToFloor(floorNum, true);
-                        waitingAt_Down[floorNum] = 0;
-                    }
-                }
+                });
             });
             current.on("idle", function(floorNum) { current.goToFloor(0); } );
         });
 
         var waitingAt_Up= [];
         var waitingAt_Down= [];
+        var elevatorsDirection = [];
         floors.forEach(function(_,index){
             waitingAt_Up.push(0);
             waitingAt_Down.push(0);
+            elevatorsDirection.push("stop");
         });
 
 
