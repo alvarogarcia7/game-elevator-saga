@@ -13,11 +13,6 @@
             current.on("floor_button_pressed", function(floorNum) { 
                 console.log("floor_button_pressed: " + floorNum );
                 current.goToFloor(floorNum);
-                if(current.currentFloor() > floorNum){
-                    elevatorsDirection[index] = "down";
-                } else {
-                    elevatorsDirection[index] = "up";
-                }
             });
             current.on("passing_floor", function(floorNum, direction) { 
                 myLog("passing_floor: " + floorNum + ", " + direction+", load: "+ current.loadFactor(), index);
@@ -46,11 +41,9 @@
 
         var waitingAt_Up= [];
         var waitingAt_Down= [];
-        var elevatorsDirection = [];
         floors.forEach(function(_,index){
             waitingAt_Up.push(0);
             waitingAt_Down.push(0);
-            elevatorsDirection.push("stop");
         });
 
 
